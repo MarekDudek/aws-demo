@@ -1,3 +1,4 @@
 .stack-work/
 aws-demo.cabal
 *~
+*.swp
