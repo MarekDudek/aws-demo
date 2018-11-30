@@ -36,6 +36,7 @@ executables:
     dependencies:
     - aws-demo
     - scotty
+    - postgresql-simple
 
 tests:
   aws-demo-test:
