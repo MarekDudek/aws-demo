@@ -80,12 +80,13 @@ insertPresentQuery c p = do
   execute c "INSERT INTO present (id, name) VALUES (?, ?)" $ p
 
 
-data User = User { userFirstName :: Text
+data User = User { userId :: Int
+                 , userFirstName :: Text
                  , userAge :: Int
                  } deriving Show
 
 instance FromRow User where
-  fromRow = User <$> field <*> field
+  fromRow = User <$> field <*> field <*> field
 
 
 insertUserQuery :: Connection -> String -> IO Int64
@@ -95,6 +96,10 @@ insertUserQuery c name = do
 selectUsersByFirstNameAndMinimumAge :: Connection -> String -> Int -> IO [User]
 selectUsersByFirstNameAndMinimumAge c name age = do
   query c "SELECT * FROM users WHERE first_name = ? AND age > ?" (name, age)
+
+selectUsersOnlyInNames :: Connection -> [String] -> IO [User]
+selectUsersOnlyInNames c ss = do
+  query c "SELECT * FROM users WHERE first_name in ?" $ Only $ In (["Marek", "Gabe"] :: [String])
 
 
 countUsersQuery :: Connection -> IO Int

@@ -29,7 +29,7 @@ spec2 = before openConnection $ after closeConnection $ do
       count <- countUsersQuery conn
       count `shouldBe` 2
     it "has 3 elements" $ \conn -> do
-      putStrLn "Counting users ..."
+      putStrLn "Counting users again ..."
       count <- countUsersQuery conn
       count `shouldBe` 2
 
@@ -43,6 +43,7 @@ closeConnection :: Connection -> IO ()
 closeConnection c = do
   putStrLn "closing..."
   close c
+
       
 beforeEverySpecItem :: IO ()
 beforeEverySpecItem = do
