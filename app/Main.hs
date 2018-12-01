@@ -13,6 +13,9 @@ import IOLib
 main :: IO ()
 main = do
 
+  success <- testConnection
+  putStrLn $ "connection OK ? " ++ (show success)
+
   conn <- awsDemoConnection
 
   printOneTwoThree
@@ -23,7 +26,6 @@ main = do
 
   children <- allChildren conn
   printChildren children
+  return ()
 
-  i <- testConnectionByAddition
-  putStrLn $ "2 + 2 == " ++ (show i)
 
