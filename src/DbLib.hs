@@ -25,7 +25,7 @@ awsDemoConnectionString = "postgresql://aws-demo-user:aws-demo-password@localhos
 testConnection :: IO Bool
 testConnection = do
   conn <- connectPostgreSQL awsDemoConnectionString
-  sum <- additionQuery conn 2 3
+  sum <- runAdditionQuery conn 2 3
   return $ sum == 5
 
 inMonadicStyle :: IO ()
@@ -34,11 +34,13 @@ inMonadicStyle = do
   putStrLn "2 + 2"
   mapM_ print =<< ( query_ conn "select 2 + 3" :: IO [Only Int] )
 
-additionQuery :: Connection -> Int -> Int -> IO Int
-additionQuery c a b = do
-  [Only sum] <- query c "SELECT ? + ?" $ (a, b)
+runAdditionQuery :: Connection -> Int -> Int -> IO Int
+runAdditionQuery c a b = do
+  [Only sum] <- query c additionQuery $ (a, b)
   return sum
 
+additionQuery :: Query
+additionQuery = "SELECT ? + ?" 
 
 data Present = Present { presentId :: Int
                        , presentName :: Text } deriving Show
