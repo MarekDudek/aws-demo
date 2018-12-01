@@ -3,9 +3,12 @@ module DbLib where
 import Database.PostgreSQL.Simple
 import Database.PostgreSQL.Simple.FromField
 import Database.PostgreSQL.Simple.FromRow
+import Database.PostgreSQL.Simple.ToField
+import Database.PostgreSQL.Simple.ToRow
 import Data.Word
 import Data.Text
 import Control.Monad
+import GHC.Int
 
 awsDemoConnection :: IO Connection
 awsDemoConnection = connect defaultConnectInfo {
@@ -32,7 +35,8 @@ inMonadicStyle = do
   mapM_ print =<< ( query_ conn "select 2 + 3" :: IO [Only Int] )
 
 
-data Present = Present { presentName :: Text } deriving Show
+data Present = Present { presentId :: Int
+                       , presentName :: Text } deriving Show
 
 data Location = Location { locLat  :: Double
                          , locLong :: Double 
@@ -43,13 +47,27 @@ data Child = Child { childName :: Text
                    } deriving Show
 
 instance FromRow Present where
-  fromRow = Present <$> field
+  fromRow = Present <$> field <*> field
 
 instance FromRow Child where
   fromRow = Child <$> field <*> liftM2 Location field field
+
+instance ToRow Present where
+  toRow p = [toField (presentId p), toField (presentName p)]
 
 allChildren :: Connection -> IO [Child]
 allChildren c = query_ c "SELECT name, loc_lat, loc_long FROM child"
 
 allPresents :: Connection -> IO [Present]
 allPresents c = query_ c "SELECT name FROM present"
+
+insertPresents :: Connection -> IO ()
+insertPresents c = do
+  insertPresentQuery c (Present 1 "pony")
+  insertPresentQuery c (Present 2 "doll")
+  insertPresentQuery c (Present 3 "ball")
+  return ()
+
+insertPresentQuery :: Connection -> Present -> IO GHC.Int.Int64
+insertPresentQuery c p = do
+  execute c "INSERT INTO present (id, name) VALUES (?, ?)" $ p

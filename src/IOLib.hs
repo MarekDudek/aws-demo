@@ -26,6 +26,6 @@ printPresents presents =
 printChildren :: [Child] -> IO ()
 printChildren children = 
   forM_ children $ do {
-      \c -> 
-        print c
+    \c -> 
+      print c
     }

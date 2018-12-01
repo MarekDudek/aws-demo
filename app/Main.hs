@@ -12,13 +12,18 @@ import IOLib
 
 main :: IO ()
 main = do
+
   conn <- awsDemoConnection
+
   printOneTwoThree
   printAgain
+
   presents <- allPresents conn
   printPresents presents
+
   children <- allChildren conn
   printChildren children
+
   i <- testConnectionByAddition
   putStrLn $ "2 + 2 == " ++ (show i)
 
