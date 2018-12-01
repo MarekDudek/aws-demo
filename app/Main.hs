@@ -16,7 +16,9 @@ main = do
   printOneTwoThree
   printAgain
   presents <- allPresents conn
-  putStrLn $ "presents: " ++ (show $ length presents)
+  printPresents presents
+  children <- allChildren conn
+  printChildren children
   i <- testConnectionByAddition
-  print $ "2 + 2 == " ++ (show i)
+  putStrLn $ "2 + 2 == " ++ (show i)
 

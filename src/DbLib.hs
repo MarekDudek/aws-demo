@@ -32,15 +32,15 @@ inMonadicStyle = do
   mapM_ print =<< ( query_ conn "select 2 + 3" :: IO [Only Int] )
 
 
-data Present = Present { presentName :: Text }
+data Present = Present { presentName :: Text } deriving Show
 
 data Location = Location { locLat  :: Double
                          , locLong :: Double 
-                         }
+                         } deriving Show
 
 data Child = Child { childName :: Text
                    , childLocation :: Location
-                   }
+                   } deriving Show
 
 instance FromRow Present where
   fromRow = Present <$> field

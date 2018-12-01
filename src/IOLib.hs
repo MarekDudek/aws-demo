@@ -1,6 +1,7 @@
 module IOLib where
 
 
+import DbLib
 import Control.Monad
 
 printOneTwoThree :: IO ()
@@ -15,3 +16,16 @@ printAgain = do
       putStrLn s
     }
     
+printPresents :: [Present] -> IO ()
+printPresents presents = 
+  forM_ presents $ do {
+    \p ->
+      print p
+    }
+
+printChildren :: [Child] -> IO ()
+printChildren children = 
+  forM_ children $ do {
+      \c -> 
+        print c
+    }
