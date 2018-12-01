@@ -24,7 +24,11 @@ dependencies:
 
 library:
   source-dirs: src
-  dependencies: postgresql-simple
+  dependencies: 
+  - postgresql-simple
+  - scotty
+  default-extensions: 
+  - OverloadedStrings 
 
 executables:
   aws-demo-exe:
@@ -38,6 +42,8 @@ executables:
     - aws-demo
     - scotty
     - postgresql-simple
+    default-extensions: 
+    - OverloadedStrings 
 
 tests:
   aws-demo-test:
@@ -51,3 +57,5 @@ tests:
     - aws-demo
     - hspec
     - postgresql-simple
+    default-extensions: 
+    - OverloadedStrings 
