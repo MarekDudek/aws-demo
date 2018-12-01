@@ -119,6 +119,26 @@ insertTestUsers c = do
   insertUsers c [(User 1 "Marek" 42), (User 2 "Gabe" 56)]
 
 
+data Sales = Sales { salesId :: Int
+                   , salesAmount :: Double
+                   , salesLabel :: String
+                   } deriving Show
+
+instance FromRow Sales where
+  fromRow = Sales <$> field <*> field <*> field
+
+instance ToRow Sales where
+  toRow s = [toField (salesId s)]
+
+insertSaleReturingId :: Connection -> Double -> String -> IO Int
+insertSaleReturingId c amount label = do
+  let q = "INSERT INTO sales (amount, label) VALUES (?, ?) RETURNING id"
+  (sale :: [Sales]) <- query c q (amount,  label) 
+  
+  return 0
+
 -- repl
 printFromDB = ((\c -> selectUsersByFirstNameAndMinimumAge c "Marek" 41) =<< awsDemoConnection) >>= print
+
+
 
