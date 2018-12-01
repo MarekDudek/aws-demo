@@ -78,3 +78,30 @@ insertPresents c = do
 insertPresentQuery :: Connection -> Present -> IO GHC.Int.Int64
 insertPresentQuery c p = do
   execute c "INSERT INTO present (id, name) VALUES (?, ?)" $ p
+
+
+data User = User { userFirstName :: Text
+                 , userAge :: Int
+                 } deriving Show
+
+instance FromRow User where
+  fromRow = User <$> field <*> field
+
+
+insertUserQuery :: Connection -> String -> IO Int64
+insertUserQuery c name = do
+  execute c "INSERT INTO users (first_name) VALUES (?)" (Only name)
+
+selectUsersByFirstNameAndMinimumAge :: Connection -> String -> Int -> IO [User]
+selectUsersByFirstNameAndMinimumAge c name age = do
+  query c "SELECT * FROM users WHERE first_name = ? AND age > ?" (name, age)
+
+
+countUsersQuery :: Connection -> IO Int
+countUsersQuery c = do
+  [Only count] <- query_ c "SELECT count(*) FROM users" 
+  return count
+
+-- repl
+printFromDB = ((\c -> selectUsersByFirstNameAndMinimumAge c "Marek" 41) =<< awsDemoConnection) >>= print
+
