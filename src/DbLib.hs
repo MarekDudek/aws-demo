@@ -128,7 +128,7 @@ instance FromRow Sales where
   fromRow = Sales <$> field <*> field <*> field
 
 instance ToRow Sales where
-  toRow s = [toField (salesId s)]
+  toRow s = [toField (salesId s), toField (salesAmount s), toField (salesLabel s)]
 
 insertSaleReturingId :: Connection -> Double -> String -> IO Int
 insertSaleReturingId c amount label = do
