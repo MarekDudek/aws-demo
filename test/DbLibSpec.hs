@@ -33,7 +33,6 @@ spec2 = before openConnection $ after closeConnection $ do
       count <- countUsersQuery conn
       count `shouldBe` 2
 
-
 openConnection :: IO Connection 
 openConnection = do
   putStrLn "connecting..."

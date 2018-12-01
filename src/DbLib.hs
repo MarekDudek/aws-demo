@@ -87,6 +87,8 @@ data User = User { userId :: Int
 
 instance FromRow User where
   fromRow = User <$> field <*> field <*> field
+instance ToRow User where
+  toRow u = [toField (userId u), toField (userFirstName u), toField (userAge u)]
 
 
 insertUserQuery :: Connection -> String -> IO Int64
@@ -106,6 +108,16 @@ countUsersQuery :: Connection -> IO Int
 countUsersQuery c = do
   [Only count] <- query_ c "SELECT count(*) FROM users" 
   return count
+
+insertUsers :: Connection -> [User] -> IO ()
+insertUsers c users = do
+  executeMany c "INSERT INTO users VALUES (?, ?, ?)" $ users
+  return ()
+
+insertTestUsers :: Connection -> IO ()
+insertTestUsers c = do
+  insertUsers c [(User 1 "Marek" 42), (User 2 "Gabe" 56)]
+
 
 -- repl
 printFromDB = ((\c -> selectUsersByFirstNameAndMinimumAge c "Marek" 41) =<< awsDemoConnection) >>= print
