@@ -29,7 +29,23 @@ library:
   - scotty
   - text
   - servant
+  - servant-blaze
+  - servant-server
   - time
+  - blaze-html
+  - blaze-markup
+  - aeson
+  - aeson-compat
+  - base-compat
+  - mtl
+  - attoparsec
+  - bytestring
+  - string-conversions
+  - lucid
+  - http-media
+  - wai
+  - warp
+  - directory
   default-extensions: 
   - OverloadedStrings 
   - ScopedTypeVariables

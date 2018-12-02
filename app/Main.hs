@@ -28,5 +28,6 @@ main = do
   children <- allChildren conn
   printChildren children
   return ()
+  runMain
 
 
