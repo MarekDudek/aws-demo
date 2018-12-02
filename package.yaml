@@ -28,6 +28,8 @@ library:
   - postgresql-simple
   - scotty
   - text
+  - servant
+  - time
   default-extensions: 
   - OverloadedStrings 
   - ScopedTypeVariables
@@ -44,6 +46,7 @@ executables:
     - aws-demo
     - scotty
     - postgresql-simple
+    - servant
     default-extensions: 
     - OverloadedStrings 
     - ScopedTypeVariables
@@ -60,6 +63,7 @@ tests:
     - aws-demo
     - hspec
     - postgresql-simple
+    - servant
     default-extensions: 
     - OverloadedStrings 
     - ScopedTypeVariables
