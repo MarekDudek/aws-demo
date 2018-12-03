@@ -84,24 +84,49 @@ type UserAPI12Alone = UserAPI12 EmptyAPI
 type UserAPI13 = "users" :> Get '[JSON] [User] :<|> Raw
 
 
-type UserAPI1 = "users" :> Get '[JSON] [User]
+type UserAPI14 = "users" :> Get '[JSON] [User]
 
 
 users1 :: [User]
-users1 = 
-  [ User "Issac Newtown"    372 "issac@newtown.co.uk" (fromGregorian 1683  3  1),
-    User "Albert Einstein"  136 "ae@c2.org"           (fromGregorian 1905 12  1),
-    User "Piotr Banach"     100 "pbanach@lwow.pl"     (fromGregorian 1928  1 31)
-  ]
+users1 = [ issac, albert, stefan ]
 
-server1 :: Server UserAPI1
+server1 :: Server UserAPI14
 server1 = return users1
 
-userAPI :: Proxy UserAPI1
-userAPI = Proxy
+userAPI14 :: Proxy UserAPI14
+userAPI14 = Proxy
 
 app1 :: Application
-app1 = serve userAPI server1
+app1 = serve userAPI14 server1
 
-runMain :: IO ()
-runMain =  run 8080 app1
+runMain1 :: IO ()
+runMain1 =  run 8080 app1
+
+type UserAPI15 = "users" :> Get '[JSON] [User]
+            :<|> "albert" :> Get '[JSON] User
+            :<|> "issac" :> Get '[JSON] User
+            :<|> "stefan" :> Get '[JSON] User
+
+issac :: User
+issac  = User "Issac Newtown"    372 "issac@newtown.co.uk" (fromGregorian 1683  3  1)
+
+albert :: User
+albert = User "Albert Einstein"  136 "ae@c2.org"           (fromGregorian 1905 12  1)
+
+stefan :: User
+stefan = User "Stefan Banach"     100 "sbanach@lwow.pl"     (fromGregorian 1928  1 31)
+
+server2 :: Server UserAPI15
+server2 = return users1
+     :<|> return albert
+     :<|> return issac 
+     :<|> return stefan 
+
+userAPI15 :: Proxy UserAPI15
+userAPI15 = Proxy
+
+app2 :: Application
+app2 = serve userAPI15 server2
+
+runMain2 :: IO ()
+runMain2 =  run 8080 app2
