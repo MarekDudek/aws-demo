@@ -38,6 +38,7 @@ import Text.Blaze
 import Text.Blaze.Html.Renderer.Utf8
 import qualified Data.Aeson.Parser
 import qualified Text.Blaze.Html
+import Servant.HTML.Blaze
 
 type UserAPI = "users" :> QueryParam "sortby" SortBy :> Get '[JSON] [User]
 
@@ -202,3 +203,56 @@ app3 = serve api server3
 
 runMain3 :: IO ()
 runMain3 = run 8080 app3
+
+
+data HTMLBlaze
+
+instance Accept HTMLBlaze where
+    contentType _ = "text" // "html" /: ("charset", "utf-8")
+
+instance ToMarkup a => MimeRender HTMLBlaze a where
+    mimeRender _ = renderHtml . Text.Blaze.Html.toHtml
+
+instance MimeRender HTMLBlaze Text.Blaze.Html.Html where
+    mimeRender _ = renderHtml
+
+
+data Person = Person
+  { firstName :: String
+  , lastName :: String
+  } deriving Generic
+
+instance ToJSON Person
+
+instance ToHtml Person where
+  toHtml person =
+    tr_ $ do
+      td_ (toHtml $ firstName person)
+      td_ (toHtml $ lastName person)
+  toHtmlRaw = toHtml
+
+instance ToHtml [Person] where
+  toHtml persons = table_ $ do
+    tr_ $ do
+      th_ "first name"
+      th_ "last name"
+    foldMap toHtml persons
+  toHtmlRaw = toHtml
+
+type PersonAPI = "persons" :> Get '[JSON] [Person]
+
+
+people :: [Person]
+people = 
+  [ Person "Isaac" "Newton"
+  , Person "Albert" "Einstein"
+  ]
+
+personAPI :: Proxy PersonAPI
+personAPI = Proxy
+
+server4 :: Server PersonAPI
+server4 = return people
+
+app4 :: Application
+app4 = serve personAPI server4
