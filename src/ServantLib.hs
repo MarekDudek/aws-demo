@@ -256,3 +256,25 @@ server4 = return people
 
 app4 :: Application
 app4 = serve personAPI server4
+
+newtype FileContent = FileContent
+  { content :: String }
+  deriving Generic
+
+type IOAPI1 = "myfile.txt" :> Get '[JSON] FileContent
+
+instance ToJSON FileContent
+
+server5 :: Server IOAPI1
+server5 = do
+  fileContent <- liftIO (readFile "res/myfile.txt")
+  return $ FileContent fileContent
+
+ioapi1 :: Proxy IOAPI1
+ioapi1 = Proxy
+
+app5 :: Application
+app5 = serve ioapi1 server5
+
+runMain5 :: IO ()
+runMain5 = run 8080 app5
