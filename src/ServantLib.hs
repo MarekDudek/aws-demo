@@ -286,3 +286,30 @@ app5 = serve ioapi1 server5
 
 runMain5 :: IO ()
 runMain5 = run 8080 app5
+
+failingHandler :: Handler ()
+failingHandler = throwError myerr
+  where myerr :: ServantErr
+        myerr = err503 { errBody = "Sorry dear user." }
+
+type FileAPI = "files" :> Capture "name" String :> Get '[JSON] FileContent
+
+fileApi :: Proxy FileAPI
+fileApi = Proxy
+
+server6 :: Server FileAPI
+server6 = file
+  where
+    file :: String -> Handler FileContent
+    file name = do
+      exists <- liftIO ( doesFileExist $ "res/" ++ name )
+      if exists
+        then liftIO ( readFile ("res/" ++ name) ) >>= return . FileContent
+        else throwError err404 { errBody = "file does not exist" }
+
+app6 :: Application
+app6 = serve fileApi server6
+
+
+runMain6 :: IO ()
+runMain6 = run 8080 app6
