@@ -40,6 +40,11 @@ import qualified Data.Aeson.Parser
 import qualified Text.Blaze.Html
 import Servant.HTML.Blaze
 
+import qualified DbLib 
+import Database.PostgreSQL.Simple
+
+import Debug.Trace
+
 type UserAPI = "users" :> QueryParam "sortby" SortBy :> Get '[JSON] [User]
 
 data SortBy = Age | Name
@@ -267,6 +272,9 @@ instance ToJSON FileContent
 
 server5 :: Server IOAPI1
 server5 = do
+  conn <- liftIO (DbLib.awsDemoConnection)
+  users <- liftIO (DbLib.selectUsersByFirstNameAndMinimumAge conn "Marek" 40)
+  liftIO (print users)
   fileContent <- liftIO (readFile "res/myfile.txt")
   return $ FileContent fileContent
 
