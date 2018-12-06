@@ -310,6 +310,36 @@ server6 = file
 app6 :: Application
 app6 = serve fileApi server6
 
-
 runMain6 :: IO ()
 runMain6 = run 8080 app6
+
+
+type MyHandler = Get '[JSON] (Headers '[Header "X-An-Int" Int] User)
+
+myHandler :: Server MyHandler
+myHandler = return $ addHeader 1797 albert
+
+type MyHeadfulHandler = Get '[JSON] (Headers '[Header "X-A-Bool" Bool, Header "X-An-Int" Int] User)
+
+myHeadfulHandler :: Server MyHeadfulHandler
+myHeadfulHandler = return $ addHeader True $ addHeader 1797 albert
+
+type MyMaybeHeaderHandler = Capture "withHeader" Bool :> Get '[JSON] (Headers '[Header "X-An-Int" Int] User)
+
+myMaybeHeaderHandler :: Server MyMaybeHeaderHandler
+myMaybeHeaderHandler x = return $ if x then addHeader 1797 albert
+                                       else noHeader       albert
+
+type StaticAPI = "static" :> Raw
+
+staticAPI :: Proxy StaticAPI
+staticAPI = Proxy
+
+server7 :: Server StaticAPI
+server7 = serveDirectoryWebApp "res"
+
+app7 :: Application
+app7 = serve staticAPI server7
+
+runMain7 :: IO ()
+runMain7 = run 8080 app7
