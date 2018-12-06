@@ -141,20 +141,22 @@ runMain2 =  run 8080 app2
 data Position = Position 
   { xCoord :: Int 
   , yCoord :: Int
-  } deriving Generic
+  } deriving (Show, Generic)
 
 instance ToJSON Position
+instance FromJSON Position
 
-newtype HelloMessage = HelloMessage { msg :: String } deriving Generic
+newtype HelloMessage = HelloMessage { msg :: String } deriving (Show, Generic)
 
 instance ToJSON HelloMessage
+instance FromJSON HelloMessage
 
 data ClientInfo = ClientInfo
   { clientName :: String
   , clientEmail :: String
   , clientAge :: Int
   , clientInterestedIn :: [String]
-  } deriving Generic
+  } deriving (Show, Generic)
 
 instance ToJSON ClientInfo
 instance FromJSON ClientInfo
@@ -164,8 +166,9 @@ data Email = Email
   , to :: String
   , subject :: String
   , body :: String
-  } deriving Generic
+  } deriving (Show, Generic)
 
+instance FromJSON Email
 instance ToJSON Email
 
 emailForClient :: ClientInfo -> Email
@@ -343,3 +346,21 @@ app7 = serve staticAPI server7
 
 runMain7 :: IO ()
 runMain7 = run 8080 app7
+
+
+type StreamAPI = "userStream" :> StreamGet NewlineFraming JSON (StreamGenerator User)
+
+streamAPI :: Proxy StreamAPI
+streamAPI = Proxy
+
+streamUsers :: StreamGenerator User
+streamUsers = StreamGenerator $ \sendFirst sendRest -> do
+  sendFirst issac
+  sendRest albert
+  sendRest stefan 
+
+app8 :: Application
+app8 = serve streamAPI (return streamUsers)
+
+runMain8 :: IO ()
+runMain8 = run 8080 app8

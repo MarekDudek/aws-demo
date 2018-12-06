@@ -25,27 +25,29 @@ dependencies:
 library:
   source-dirs: src
   dependencies: 
-  - postgresql-simple
-  - scotty
+  - base-compat
   - text
-  - servant
-  - servant-blaze
-  - servant-server
   - time
+  - bytestring
+  - directory
+  - mtl
+  - string-conversions
+  - postgresql-simple
+  - servant
+  - servant-server
+  - servant-client
+  - servant-blaze
   - blaze-html
   - blaze-markup
   - aeson
   - aeson-compat
-  - base-compat
-  - mtl
+  - scotty
   - attoparsec
-  - bytestring
-  - string-conversions
   - lucid
   - http-media
+  - http-client
   - wai
   - warp
-  - directory
   default-extensions: 
   - OverloadedStrings 
   - ScopedTypeVariables
