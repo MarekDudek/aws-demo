@@ -24,16 +24,6 @@ api' = Proxy
 
 (position' :<|> hello' :<|> marketing') :<|> EmptyClient = client api'
 
---data Scheme = Http | Https 
-
---data BaseUrl = BaseUrl 
---  { baseUrlScheme :: Scheme
---  , baseUrlHost :: String
---  , baseUrlPort :: Int
---  , baseUrlPath :: String
---  }
-
-
 queries :: ClientM (Position, HelloMessage, Email)
 queries = do
   pos <- position 10 10
